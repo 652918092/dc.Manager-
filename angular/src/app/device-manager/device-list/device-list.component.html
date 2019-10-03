@@ -1,0 +1,187 @@
+<div [@routerTransition]>
+  <nz-layout class="layout">
+    <div nz-row class="topDiv" style="line-height: 30px;">
+      <span class="topTitle">设备列表</span>
+      <div style="float:right;margin-top: -5px;">
+        <nz-input-group [nzSuffix]="suffixIconSearch">
+          <input type="text" nz-input placeholder="请输入设备编号" [(ngModel)]="_searchValue" (keyup)="onSearch($event)"/>
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+          <i nz-icon nzType="search" (click)="searchGetInfo()"></i>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="content">
+      <div nz-row style="padding: 5px 15px; margin-bottom: 5px;">
+        <button nz-button [nzType]="'default'" [nzSize]="'middle'" (click)="doAddDevice()">
+          <i nz-icon nzType="anticon anticon-plus"></i>添加设备</button>
+
+       <button nz-button nzType="default"  (click)="fileSelect.click()"  style="margin-left: 10px;" [disabled]="_uploading" >
+        <i nz-icon nzType="anticon anticon-upload"></i><span>导入设备</span>
+      </button>
+       <input #fileSelect type="file" style="display:none" 
+          [disabled]="_uploading"
+          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
+          ng2FileSelect [uploader]="_uploader" (change)="onUpload()"/>
+
+        <button nz-button nzType="primary" (click)="doExportExcel()" style=" margin:2px 10px 0 10px;" [nzSize]="'middle'">
+          <i class="fa fa-sign-in"></i>导出数据</button>
+
+        <a href="../../../assets/设备导入模板.xlsx" style="margin-left: 10px;">下载导入模板</a>
+         
+      </div>
+
+      <div nz-row style="padding: 5px 20px" id="shaixuang">
+        <div nz-row style="border-bottom: solid 1px lightgray;padding-left: 7px;">
+          <label style="display: block;float: left;color: #0D6AA8;font-size: 14px;margin: 0px">筛选</label>
+          
+        </div>
+        <div>
+          <div nz-row style="border-bottom: dashed 1px lightgray;">
+            <div nz-row style="color: #0D6AA8;padding-left: 20px;line-height: 30px;margin: 3px 0px;">
+              <label style="font-size: 13px;">添加时间:</label>
+              <!-- <input nz-input id="startDate" [nzSize]="'small'"  type="text"   placeholder="开始日期" style="width: 160px;margin-left: 5px; height: 30px;"
+                 onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" class="Wdate"  />
+                 <span style="font-size: 13px;margin: 0px 10px">至</span>
+              <input nz-input id="endDate" [nzSize]="'small'"  type="text"   placeholder="结束日期" style="width: 160px;height: 30px;"
+                 onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" class="Wdate"  /> -->
+              <!-- <nz-date-picker [nzSize]="'middle'"></nz-date-picker> -->
+              <nz-date-picker class="splice" style="width: 200px" placeholder="开始日期" [(ngModel)]="creationDateStart" (ngModelChange)="doChange()"></nz-date-picker>
+                <span style="font-size: 13px;margin: 0px 10px">至</span>
+              <nz-date-picker style="width: 200px" placeholder="结束日期" [(ngModel)]="creationDateEnd" (ngModelChange)="doChange()"></nz-date-picker>
+              
+              <button nz-button style="margin-left: 70px;" [nzType]="'default'" [nzSize]="'middle'" (click)="getDeviceList(true)">
+                <i class="fa fa-search" style="margin-right: 2px;"></i>查询</button>
+
+                <button nz-button class="clearSelect" style="background: #efb713;margin-left: 10px;" *ngIf="isShow"  (click)="doClear()">
+                  <span><i class="anticon anticon-filter"></i> 清除筛选</span>
+                </button>
+            </div>
+          </div>
+      
+          <div nz-row style="border-bottom: dashed 1px lightgray;">
+            <div nz-row style="color: #0D6AA8;padding-left: 20px;line-height: 30px; margin: 2px 0px;">
+              <label style="float: left;font-size: 13px;">使用状态：</label>
+              <ul class="rowStyle" style="float: left;">
+                <li *ngFor="let sdata of deviceStatusOptions">
+                <label nz-checkbox style="color:black;font-size: 12px;" [(ngModel)]="sdata.checked"
+                  (ngModelChange)="deviceStatusChange(sdata)">
+                  <span>{{sdata.label}}</span>
+                </label>
+                </li>
+             </ul>
+             
+              <div style="float: left;padding-left: 30px">
+                <label style="float: left;font-size: 13px;">泊位状态：</label>
+                <ul class="rowStyle" style="float: left;">
+                <li *ngFor="let tdata of synStatusOptions">
+                  <label nz-checkbox style="color:black;font-size: 12px;" [(ngModel)]="tdata.checked"
+                    (ngModelChange)="synStatusChange(tdata)">
+                    <span>{{tdata.label}}</span>
+                  </label>
+                </li>
+              </ul>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <nz-table
+      #ajaxTable
+      nzShowSizeChanger
+      [nzScroll]="{ x: '1300px' }"
+      [(nzPageIndex)]="_pageIndex"
+      [(nzPageSize)]="_pageSize"
+      (nzPageIndexChange)="getDeviceList()"
+      (nzPageSizeChange)="getDeviceList(true)"
+      [nzData]="_deviceList"
+      [nzShowTotal]="totalTemplate"
+      [nzTotal]="_total"
+      [nzLoading]="_loading">
+      <thead (nzSortChange)="sort($event)" nzSingleSort>
+        <tr>
+          <th [nzWidth]="'5em'" nzLeft="0px" [nzAlign]="'center'"  class="thStyle" style="text-align:center">序号</th>
+          <th [nzWidth]="'7em'" nzLeft="4.2em" class="thStyle">设备编号</th>
+          <th [nzWidth]="'9em'" class="thStyle">使用状态</th>
+          <th [nzWidth]="'8em'" class="thStyle" >泊位状态</th>
+          <th [nzWidth]="'7em'" class="thStyle">心跳周期</th>
+          <th [nzWidth]="'7em'" class="thStyle">检查周期</th>
+          <th [nzWidth]="'6em'" class="thStyle">温度值</th>
+          <th [nzWidth]="'5em'" class="thStyle">电压</th>
+          <th [nzWidth]="'6em'" class="thStyle" style="font-size: 12px;">信号强度</th>
+          <th [nzWidth]="'11.5em'" class="thStyle" nzShowSort nzSortKey="StatusUpdateTime"><span>更新时间</span></th>
+          <th [nzWidth]="'11.5em'" class="thStyle" nzShowSort nzSortKey="CreationTime">添加时间</th>
+          <th [nzWidth]="'11.5em'" class="thStyle">设备描述</th>
+          <th [nzAlign]="'center'" nzRight="0px" style="min-width: 11.5em;" class="thStyle">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of ajaxTable.data;  let i = index"  >
+          <td [nzAlign]="'center'" nzLeft="0px">{{i+1}}</td>
+          <td nzLeft="4.4em">{{ data.deviceNo}}</td>
+          <td>
+            <span *ngIf="data.deviceStatus==0" style="color:blue">新增(未连接)</span>
+            <span *ngIf="data.deviceStatus==1" style="color: green">在线</span>
+            <span *ngIf="data.deviceStatus==2" style="color: red">离线</span>
+          </td>
+          <td>
+              <span *ngIf="data.synStatus==0">无车</span>
+              <span *ngIf="data.synStatus==1" style="color: green">有车</span>
+              <span *ngIf="data.synStatus==2" >等待激活</span>
+              <span *ngIf="data.synStatus==3">初始化中</span>
+          </td>
+          <td>
+              <span *ngIf="data.hbeatT >=0 && data.hbeatT !=null">{{ data.hbeatT }}分钟</span>
+          </td>
+          <td>
+            <span *ngIf="data.healthT >=0 && data.healthT !=null">{{ data.healthT }}分钟</span>
+          </td>
+          <td>
+              <span *ngIf="data.temperature>0">+{{ data.temperature }}℃</span>
+              <span *ngIf="data.temperature==0">{{ data.temperature }}℃</span>
+              <span *ngIf="data.temperature!=null && data.temperature<0">{{ data.temperature }}℃</span>
+          </td>
+          <td>
+              <span *ngIf="data.batVoltage!=null">{{ data.batVoltage }}V</span>
+          </td>
+          <td [nzAlign]="'center'">{{ data.nbSignal }}</td>
+          <td>{{ data.statusUpdateTime | momentFormat:'YYYY/MM/DD HH:mm:ss'}}</td>
+          <td>{{ data.creationTime | momentFormat:'YYYY/MM/DD HH:mm:ss'}}</td>
+          <td title={{data.deviceDescribe}} style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap;max-width: 150px;">{{ data.deviceDescribe}}</td>
+          <td  [nzAlign]="'center'" nzRight="0px">
+              <nz-button-group (click)="delEvent($event)" [nzSize]="'small'">
+                  <button nz-button [nzType]="'link'" [nzSize]="'small'" title="删除设备" (click)="onDeleteDevice(data.id)" >
+                    <i class="fa fa-trash-o" aria-hidden="true" style="font-size: 12px;" ></i>
+                  </button>
+                  <button nz-button [nzType]="'link'" [nzSize]="'small'" title="重新标定" (click)="onReCalibration(data.deviceNo, data.deviceStatus)">
+                    <i class="fa fa-eraser" style="font-size: 12px;"></i>
+                </button>
+              </nz-button-group>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <ng-template #totalTemplate let-total>共 {{ _total }} 条记录</ng-template>
+
+    </div>
+
+  </nz-layout>
+
+</div>
+
+<nz-modal [nzMaskClosable]="false" [nzVisible]="_visibleCreate === true" [nzTitle]="'新增设备'" [nzContent]="CreateInfo"
+    (nzOnCancel)="cancelAdd()" (nzOnOk)="onCreateDevice()" [nzOkLoading]="_addLoading" >
+    <ng-template #CreateInfo>
+        <div style="margin-bottom: 10px;">
+            <label style="font-size: 14px;margin-bottom: 5px;"> 设备编号:</label>
+            <input nz-input [(ngModel)]="_deviceNo" (keyup)="onKey($event,9)"  placeholder="请输入设备编号" nzSize="default" />
+        </div>
+        <div>
+            <label style="font-size: 14px;margin-bottom: 5px;"> 设备描述:</label>
+            <textarea  nz-input rows="4" [(ngModel)]="_deviceDescribe" (keyup)="onKey($event,256)" placeholder="设备信息描述" nzSize="default"></textarea>
+        </div>
+    </ng-template>
+</nz-modal>

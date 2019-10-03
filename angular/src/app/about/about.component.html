@@ -1,0 +1,132 @@
+﻿<div class="row clearfix" [@routerTransition]>
+    
+       <h1>深圳市海涯科技有限公司</h1>
+
+        <!-- <button nz-button nzType="danger">Danger</button>
+        <nz-date-picker [nzSize]="'default'"></nz-date-picker>
+        <nz-date-picker style="width: 200px" placeholder="结束日期" [(ngModel)]="creationDateEnd" (ngModelChange)="doChange()"></nz-date-picker>
+
+        <nz-table
+        #ajaxTable
+        nzShowSizeChanger
+        [nzScroll]="{ x: '1100px' }"
+        [(nzPageIndex)]="_pageIndex"
+        [(nzPageSize)]="_pageSize"
+        (nzPageIndexChange)="getDeviceList()"
+        (nzPageSizeChange)="getDeviceList(true)"
+        [nzData]="listOfData"
+        [nzShowTotal]="totalTemplate"
+        [nzTotal]="_total"
+        [nzLoading]="_loading">
+        <thead (nzSortChange)="sort($event)" nzSingleSort>
+          <tr>
+            <th [nzWidth]="'10em'" nzLeft="0px" [nzAlign]="'center'"  class="thStyle" style="text-align:center">序号</th>
+            <th [nzWidth]="'11.5em'" nzLeft="10em" nzShowSort nzSortKey="name">Name</th>
+            <th [nzWidth]="'11.5em'">Age</th>
+            <th [nzWidth]="'20em'">Name</th>
+            <th [nzWidth]="'11.5em'">Age</th>
+            <th [nzWidth]="'18em'" >Address</th>
+            <th  [nzWidth]="'18em'" nzRight="0px" >Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of ajaxTable.data;  let i = index"  >
+            <td [nzAlign]="'center'" nzLeft="0px">{{i+1}}</td>
+            <td nzLeft="10em">{{ data.name }}</td>
+            <td>{{ data.age }}</td> 
+            <td>{{ data.name }}</td>
+            <td>{{ data.age }}</td>
+            <td>{{ data.address }}</td>
+            <td nzRight="0px">
+              <a>Action 一 {{ data.name }}</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a>Delete</a>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+      <ng-template #totalTemplate let-total>共 {{ _total }} 条记录</ng-template> -->
+
+    <!-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="header">
+                <h2>
+                    About This Template
+                </h2>
+            </div>
+            <div class="body">
+                <p>
+                    This is a simple startup template based on ASP.NET Boilerplate framework and Module Zero.
+                    If you need an enterprise startup project, check <a href="http://aspnetzero.com?ref=abptmpl" target="_blank">ASP.NET ZERO</a>.
+                </p>
+
+                <h3>What is ASP.NET Boilerplate?</h3>
+
+                <p>
+                    ASP.NET Boilerplate is an application framework built on latest <strong>ASP.NET Core</strong> framework.
+                    It makes easy to use authorization, dependency injection, validation, exception handling, localization, logging, caching, background jobs and so on.
+                    It's built on already familiar tools like Entity Framework, AutoMapper, Castle Windsor...
+                </p>
+
+                <p>
+                    ASP.NET Boilerplate implements <strong>NLayer architecture</strong> (Domain, Application, Infrastructure and Presentation Layers)
+                    and <strong>Domain Driven Design</strong> (Entities, Repositories, Domain/Application Services, DTO's...).
+                    Also implements and provides a good infrastructure to implement common software development <strong>best practices</strong>.
+                </p>
+
+                <h3>What is Module Zero?</h3>
+
+                <p>
+                    ASP.NET Boilerplate framework is designed to be independent of any database
+                    schema and to be as generic as possible. Therefore, It leaves some concepts
+                    <strong>abstract</strong> and <strong>optional</strong> (like audit logging, permission and setting stores)
+                    which requires some <strong>data store</strong>.
+                </p>
+                <p>
+                    <strong>Module Zero </strong>implements all fundamental concepts of ASP.NET
+                    Boilerplate framework such as <a href="http://www.aspnetboilerplate.com/Pages/Documents/Zero/Tenant-Management">tenant management</a> (<strong>multi-tenancy</strong>),
+                    <a href="http://www.aspnetboilerplate.com/Pages/Documents/Zero/Role-Management">
+                        role management
+                    </a>, <a href="http://www.aspnetboilerplate.com/Pages/Documents/Zero/User-Management">user management</a>,
+                    <a href="http://www.aspnetboilerplate.com/Pages/Documents/Authorization">authorization</a> (<a href="http://www.aspnetboilerplate.com/Pages/Documents/Zero/Permission-Management">
+                        permission management
+                    </a>),
+                    <a href="http://www.aspnetboilerplate.com/Pages/Documents/Setting-Management">setting management</a>, <a href="http://www.aspnetboilerplate.com/Pages/Documents/Zero/Language-Management">
+                        language management
+                    </a>, <a href="http://www.aspnetboilerplate.com/Pages/Documents/Audit-Logging">audit logging</a>
+                    and so on.
+                </p>
+                <p>
+                    Module-Zero defines entities and implements <strong>domain logic</strong>
+                    (domain layer) and leaves application and presentation layers to you.
+                </p>
+
+                <h4>Based on Microsoft ASP.NET Core Identity</h4>
+
+                <p>
+                    Module Zero is based on Microsoft's
+                    <a href="https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity" target="_blank">ASP.NET Core Identity</a> library.
+                    It extends user and role managers and implements user and role stores using generic repositories.
+                </p>
+
+                <h3>Documentation</h3>
+
+                <ul>
+                    <li>
+                        <a href="https://www.aspnetboilerplate.com/Pages/Documents/Zero/Startup-Template-Angular">Documentation for this template</a>
+                    </li>
+                    <li>
+                        <a href="http://www.aspnetboilerplate.com/Pages/Documents">ASP.NET Boilerplate documentation</a>
+                    </li>
+                </ul>
+
+                <h3>Source code</h3>
+
+                <p>
+                    This template is developed open source on Github. You can contribute to the template.
+                    <a href="https://github.com/aspnetboilerplate/module-zero-core-template" target="_blank">https://github.com/aspnetboilerplate/module-zero-core-template</a>
+                </p>
+            </div>
+        </div>
+    </div> -->
+</div>
